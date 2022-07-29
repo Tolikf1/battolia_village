@@ -1,0 +1,53 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://scenes/tank/Tank.gd" type="Script" id=1]
+[ext_resource path="res://Art/Track_2.png" type="Texture" id=2]
+[ext_resource path="res://Art/Hull.png" type="Texture" id=3]
+[ext_resource path="res://Art/Turret.png" type="Texture" id=4]
+[ext_resource path="res://Art/Track_1.png" type="Texture" id=5]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 15.5, 24 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 5 ), ExtResource( 2 ) ],
+"loop": true,
+"name": "Track_Animation",
+"speed": 5.0
+} ]
+
+[node name="Tank" type="KinematicBody2D"]
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+speed = 100.0
+rotation_speed = 5.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0.5, 1 )
+shape = SubResource( 1 )
+
+[node name="Spites" type="Node2D" parent="."]
+scale = Vector2( 0.2, 0.2 )
+
+[node name="Tracks" type="Node2D" parent="Spites"]
+position = Vector2( 0, 5 )
+scale = Vector2( 1.3, 1.1 )
+
+[node name="L" type="AnimatedSprite" parent="Spites/Tracks"]
+position = Vector2( -50, 0 )
+frames = SubResource( 2 )
+animation = "Track_Animation"
+
+[node name="R" type="AnimatedSprite" parent="Spites/Tracks"]
+position = Vector2( 50, 0 )
+frames = SubResource( 2 )
+animation = "Track_Animation"
+
+[node name="Hull" type="Sprite" parent="Spites"]
+texture = ExtResource( 3 )
+
+[node name="Turret" type="Sprite" parent="Spites"]
+texture = ExtResource( 4 )
