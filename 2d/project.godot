@@ -52,6 +52,14 @@ fire_weapon={
  ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="player"
+2d_physics/layer_2="bot"
+2d_physics/layer_3="wall"
+2d_physics/layer_4="indestructible_wall"
+2d_physics/layer_5="shell"
+
 [physics]
 
 common/enable_pause_aware_picking=true

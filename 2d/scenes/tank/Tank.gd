@@ -3,12 +3,17 @@ extends KinematicBody2D
 export (float) var speed
 export (float) var rotation_speed
 
+export (PackedScene) var shell_scene
+export (float) var shell_speed
+
+export (PackedScene) var shooting_effects_scene
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 	
-func _process(delta):
+func _physics_process(delta):
 	movement(delta)
 
 
@@ -27,10 +32,11 @@ func movement(delta):
 		
 	rotation += input_rotation * rotation_speed * delta
 	var direction = Vector2.UP.rotated(rotation)
-	var delta_position = direction * input_speed * speed * delta
-	position += delta_position
+	var velocity = direction * input_speed * speed
+	move_and_slide(velocity)
 	
 	animate_tracks(input_speed, input_rotation)
+	shoot(input_speed * speed)
 
 # speed, rotation є {0, 1, -1}
 func animate_tracks(speed, rotation):
@@ -46,3 +52,15 @@ func animate_tracks(speed, rotation):
 	else:
 		$Spites/Tracks/L.playing = false
 		$Spites/Tracks/R.playing = false
+
+func shoot(speed):
+	if Input.is_action_just_pressed("fire_weapon"):
+		var shell = shell_scene.instance()
+		shell.position = $NozzlePosition.position
+		shell.init(Vector2.UP.rotated(rotation), shell_speed)
+		add_child(shell)
+		
+		var shot = shooting_effects_scene.instance()
+		shot.position = $NozzlePosition.position
+		shot.linear_velocity = Vector2.UP.rotated(rotation) * speed
+		add_child(shot)
