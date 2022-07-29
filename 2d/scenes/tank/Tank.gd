@@ -29,3 +29,20 @@ func movement(delta):
 	var direction = Vector2.UP.rotated(rotation)
 	var delta_position = direction * input_speed * speed * delta
 	position += delta_position
+	
+	animate_tracks(input_speed, input_rotation)
+
+# speed, rotation є {0, 1, -1}
+func animate_tracks(speed, rotation):
+	if speed:
+		$Spites/Tracks/L.playing = true
+		$Spites/Tracks/R.playing = true
+	elif rotation == 1:
+		$Spites/Tracks/L.playing = true
+		$Spites/Tracks/R.playing = false
+	elif rotation == -1:
+		$Spites/Tracks/L.playing = false
+		$Spites/Tracks/R.playing = true
+	else:
+		$Spites/Tracks/L.playing = false
+		$Spites/Tracks/R.playing = false
