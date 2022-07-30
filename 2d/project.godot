@@ -8,6 +8,28 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "KinematicBody2D",
+"class": "Shell",
+"language": "GDScript",
+"path": "res://Shell.gd"
+}, {
+"base": "RigidBody2D",
+"class": "ShootingEffects",
+"language": "GDScript",
+"path": "res://scenes/tank/ShootingEffects.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "Tank",
+"language": "GDScript",
+"path": "res://scenes/tank/Tank.gd"
+} ]
+_global_script_class_icons={
+"Shell": "",
+"ShootingEffects": "",
+"Tank": ""
+}
+
 [application]
 
 config/name="2d"

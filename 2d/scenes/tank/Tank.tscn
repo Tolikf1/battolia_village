@@ -27,7 +27,7 @@ __meta__ = {
 speed = 100.0
 rotation_speed = 1.0
 shell_scene = ExtResource( 7 )
-shell_speed = 10.0
+shell_speed = 600.0
 shooting_effects_scene = ExtResource( 6 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

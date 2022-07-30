@@ -1,9 +1,12 @@
 extends KinematicBody2D
 
+class_name Shell
+
 var velocity = Vector2.ZERO
 
 func init(direction: Vector2, shell_speed: float):
 	velocity = direction * shell_speed
+	rotation = -direction.angle_to(Vector2.UP)
 
 func _physics_process(delta):
 	var collision = move_and_collide(velocity * delta)

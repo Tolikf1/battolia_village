@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+class_name Tank
+
 export (float) var speed
 export (float) var rotation_speed
 
@@ -39,7 +41,7 @@ func movement(delta):
 	shoot(input_speed * speed)
 
 # speed, rotation є {0, 1, -1}
-func animate_tracks(speed, rotation):
+func animate_tracks(speed: float, rotation: float):
 	if speed:
 		$Spites/Tracks/L.playing = true
 		$Spites/Tracks/R.playing = true
@@ -53,14 +55,17 @@ func animate_tracks(speed, rotation):
 		$Spites/Tracks/L.playing = false
 		$Spites/Tracks/R.playing = false
 
-func shoot(speed):
+func shoot(speed: float):
 	if Input.is_action_just_pressed("fire_weapon"):
-		var shell = shell_scene.instance()
-		shell.position = $NozzlePosition.position
-		shell.init(Vector2.UP.rotated(rotation), shell_speed)
-		add_child(shell)
+		var nozzle_position_in_parent = position + $NozzlePosition.position
 		
-		var shot = shooting_effects_scene.instance()
-		shot.position = $NozzlePosition.position
-		shot.linear_velocity = Vector2.UP.rotated(rotation) * speed
-		add_child(shot)
+		var shell : Shell = shell_scene.instance()
+		shell.position = nozzle_position_in_parent
+		shell.init(Vector2.UP.rotated(rotation), shell_speed)
+		shell.scale = 0.5 * Vector2.ONE
+		get_parent().add_child(shell)
+		
+		var shot : ShootingEffects = shooting_effects_scene.instance()
+		shot.position = nozzle_position_in_parent
+		shot.init(rotation, speed)
+		get_parent().add_child(shot)
