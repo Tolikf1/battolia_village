@@ -1,14 +1,24 @@
 extends KinematicBody2D
-
 class_name Tank
+
+class Controls:
+	var throttle : float
+	var rotation : float
+	var shoot : bool
+	
+	func _init(throttle_: float, rotation_: float, shoot_: bool):
+		throttle = throttle_
+		rotation = rotation_
+		shoot = shoot_
 
 export (float) var speed
 export (float) var rotation_speed
+export (bool) var is_bot
 
-export (PackedScene) var shell_scene
 export (float) var shell_speed
 
-export (PackedScene) var shooting_effects_scene
+signal tank_shoots(position, rotation, shell_speed, tank_speed)
+signal tank_dies(position, rotation)
 
 
 # Called when the node enters the scene tree for the first time.
@@ -16,29 +26,24 @@ func _ready():
 	pass # Replace with function body.
 	
 func _physics_process(delta):
-	movement(delta)
-
-
-func movement(delta):
-	var input_speed = 0
-	var input_rotation = 0
+	var controls : Controls = null
+	if is_bot == false:
+		controls = human_get_controls()
+	elif is_bot == true:
+		controls = bot_get_controls()
 	
-	if Input.is_action_pressed("move_forward"):
-		input_speed += 1
-	if Input.is_action_pressed("move_back"):
-		input_speed -= 1
-	if Input.is_action_pressed("rotate_CCW"):
-		input_rotation -= 1
-	if Input.is_action_pressed("rotate_CW"):
-		input_rotation += 1
-		
-	rotation += input_rotation * rotation_speed * delta
+	movement(delta, controls)
+	if controls.shoot == true:
+		shoot(controls.throttle * speed)
+
+
+func movement(delta, controls : Controls):
+	rotation += controls.rotation * rotation_speed * delta
 	var direction = Vector2.UP.rotated(rotation)
-	var velocity = direction * input_speed * speed
+	var velocity = direction * controls.throttle * speed
 	move_and_slide(velocity)
 	
-	animate_tracks(input_speed, input_rotation)
-	shoot(input_speed * speed)
+	animate_tracks(controls.rotation, controls.throttle)
 
 # speed, rotation є {0, 1, -1}
 func animate_tracks(speed: float, rotation: float):
@@ -56,16 +61,31 @@ func animate_tracks(speed: float, rotation: float):
 		$Spites/Tracks/R.playing = false
 
 func shoot(speed: float):
+	var nozzle_position_in_parent = position + $NozzlePosition.position.rotated(rotation)
+	emit_signal("tank_shoots", nozzle_position_in_parent, rotation, shell_speed, speed)
+		
+func human_get_controls() -> Controls:
+	var input_speed = 0
+	var input_rotation = 0
+	var is_shot = false
+	
+	if Input.is_action_pressed("move_forward"):
+		input_speed += 1
+	if Input.is_action_pressed("move_back"):
+		input_speed -= 1
+	if Input.is_action_pressed("rotate_CCW"):
+		input_rotation -= 1
+	if Input.is_action_pressed("rotate_CW"):
+		input_rotation += 1
+		
 	if Input.is_action_just_pressed("fire_weapon"):
-		var nozzle_position_in_parent = position + $NozzlePosition.position
-		
-		var shell : Shell = shell_scene.instance()
-		shell.position = nozzle_position_in_parent
-		shell.init(Vector2.UP.rotated(rotation), shell_speed)
-		shell.scale = 0.5 * Vector2.ONE
-		get_parent().add_child(shell)
-		
-		var shot : ShootingEffects = shooting_effects_scene.instance()
-		shot.position = nozzle_position_in_parent
-		shot.init(rotation, speed)
-		get_parent().add_child(shot)
+		is_shot = true
+	
+	return Controls.new(input_speed, input_rotation, is_shot)
+	
+func bot_get_controls() -> Controls:
+	return Controls.new(0,0,false)
+	
+func take_hit():
+	emit_signal("tank_dies", position, rotation)
+	queue_free()

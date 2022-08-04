@@ -1,0 +1,39 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://scenes/tank/Tank.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/MainScene/MainScene.gd" type="Script" id=2]
+[ext_resource path="res://scenes/Shooting effects/ShootingEffects.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/Shell/Shell.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/WallScene/AnotherOneBrickInTheWall.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/Explosion/ExplosionEffect.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/MainScene/Wall.gd" type="Script" id=7]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1280, 0, 0, 0, 0, 0, 1280, 720, 0, 0, 0, 0, 1280, 720, 0, 0, 0, 0, 0, 720, 0, 0, 0, 0, 0, 0 )
+}
+
+[node name="MainScene" type="Node"]
+script = ExtResource( 2 )
+shell_scene = ExtResource( 4 )
+shooting_effects_scene = ExtResource( 3 )
+wall_scene = ExtResource( 5 )
+explosion_scene = ExtResource( 6 )
+
+[node name="Tank" parent="." instance=ExtResource( 1 )]
+collision_mask = 14
+
+[node name="Map" type="Node2D" parent="."]
+
+[node name="Wall" type="Path2D" parent="Map"]
+curve = SubResource( 1 )
+script = ExtResource( 7 )
+wall_tile_scene = ExtResource( 5 )
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Map/Wall"]
+
+[node name="BotTank1" parent="." instance=ExtResource( 1 )]
+collision_layer = 2
+is_bot = true
+
+[connection signal="tank_shoots" from="Tank" to="." method="_on_Tank_tank_shoots"]

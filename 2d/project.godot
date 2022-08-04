@@ -9,15 +9,20 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "StaticBody2D",
+"class": "AnotherOneBrickInTheWall",
+"language": "GDScript",
+"path": "res://scenes/WallScene/AnotherOneBrickInTheWall.gd"
+}, {
 "base": "KinematicBody2D",
 "class": "Shell",
 "language": "GDScript",
-"path": "res://Shell.gd"
+"path": "res://scenes/Shell/Shell.gd"
 }, {
 "base": "RigidBody2D",
 "class": "ShootingEffects",
 "language": "GDScript",
-"path": "res://scenes/tank/ShootingEffects.gd"
+"path": "res://scenes/Shooting effects/ShootingEffects.gd"
 }, {
 "base": "KinematicBody2D",
 "class": "Tank",
@@ -25,6 +30,7 @@ _global_script_classes=[ {
 "path": "res://scenes/tank/Tank.gd"
 } ]
 _global_script_class_icons={
+"AnotherOneBrickInTheWall": "",
 "Shell": "",
 "ShootingEffects": "",
 "Tank": ""
@@ -33,6 +39,7 @@ _global_script_class_icons={
 [application]
 
 config/name="2d"
+run/main_scene="res://scenes/MainScene/MainScene.tscn"
 config/icon="res://icon.png"
 
 [display]
